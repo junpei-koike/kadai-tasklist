@@ -1,4 +1,4 @@
-package contorollers;
+package controllers;
 
 import java.io.IOException;
 
