@@ -33,23 +33,24 @@ public class UpdateServlet extends HttpServlet {
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String _token = (String)request.getParameter("_token");
-        if(_token != null && _token.equals(request.getSession().getId())){
+        if(_token != null && _token.equals(request.getSession().getId())) {
             EntityManager em = DBUtil.createEntityManager();
 
-            //セッションスコープからタスクのIDを取得して
-            //該当のIDのタスク1件のみをデータベースから取得
-            Task t = em.find(Task.class, (Integer)(request.getSession().getAttribute("Task_id")));
+            // セッションスコープからタスクのIDを取得して
+            // 該当のIDのメッセージ1件のみをタスクから取得
+            Task t = em.find(Task.class, (Integer)(request.getSession().getAttribute("task_id")));
 
-            //フォームの内容を各プロパティに上書き
+            // フォームの内容を各プロパティに上書き
             String content = request.getParameter("content");
             t.setContent(content);
 
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            t.setUpdated_at(currentTime);
+            t.setUpdated_at(currentTime);       // 更新日時のみ上書き
 
             // データベースを更新
             em.getTransaction().begin();
             em.getTransaction().commit();
+            request.getSession().setAttribute("flush", "更新が完了しました。");
             em.close();
 
             // セッションスコープ上の不要になったデータを削除
@@ -60,18 +61,3 @@ public class UpdateServlet extends HttpServlet {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
